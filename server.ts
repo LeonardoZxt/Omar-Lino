@@ -352,14 +352,18 @@ app.get('/api/health', (_req, res) => {
 });
 
 // ── Arrancar el servidor ──────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 Backend Express corriendo en http://localhost:${PORT}`);
-  const hasRefreshToken = !!process.env.GOOGLE_REFRESH_TOKEN;
-  if (!hasRefreshToken) {
-    console.log('\n⚠️  Google Calendar no está vinculado.');
-    console.log('   El dueño debe abrir este enlace en su navegador:');
-    console.log(`   👉 http://localhost:${PORT}/api/auth\n`);
-  } else {
-    console.log('✅ Google Calendar vinculado correctamente.\n');
-  }
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Backend Express corriendo en http://localhost:${PORT}`);
+    const hasRefreshToken = !!process.env.GOOGLE_REFRESH_TOKEN;
+    if (!hasRefreshToken) {
+      console.log('\n⚠️  Google Calendar no está vinculado.');
+      console.log('   El dueño debe abrir este enlace en su navegador:');
+      console.log(`   👉 http://localhost:${PORT}/api/auth\n`);
+    } else {
+      console.log('✅ Google Calendar vinculado correctamente.\n');
+    }
+  });
+}
+
+export default app;
