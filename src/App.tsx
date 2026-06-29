@@ -780,9 +780,9 @@ const SessionDetails = () => (
               href="https://wa.me/5215635706932"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center bg-emerald-800 hover:bg-emerald-900 text-white py-4 sm:py-5 px-4 rounded-xl sm:rounded-[2rem] font-sans font-black text-base sm:text-lg md:text-xl transition-all shadow-2xl active:scale-95 text-center"
+              className="w-full flex items-center justify-center bg-emerald-800 hover:bg-emerald-900 text-white py-4 sm:py-5 px-4 rounded-xl sm:rounded-[2rem] font-sans font-black text-sm sm:text-lg md:text-xl transition-all shadow-2xl active:scale-95"
             >
-              Agendar mi primera sesión
+              <span className="text-center w-full block">Agendar mi primera sesión</span>
             </motion.a>
           </motion.div>
         </div>
