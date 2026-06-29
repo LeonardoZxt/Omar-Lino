@@ -530,7 +530,7 @@ const SessionDetails = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="bg-[#f4f7f2] rounded-[4rem] p-12 md:p-24 relative overflow-hidden border border-emerald-100 shadow-xl"
+        className="bg-[#f4f7f2] rounded-[4rem] p-6 sm:p-12 md:p-24 relative overflow-hidden border border-emerald-100 shadow-xl"
       >
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-200/20 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-200/10 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
@@ -588,7 +588,7 @@ const SessionDetails = () => (
               boxShadow: "0 40px 80px -20px rgba(6, 95, 70, 0.15)"
             }}
             style={{ transformStyle: "preserve-3d" }}
-            className="bg-[#FAFAF7] p-6 sm:p-10 md:p-14 rounded-[3rem] shadow-2xl relative border border-stone-200/60 transition-shadow duration-300"
+            className="bg-[#FAFAF7] p-5 sm:p-10 md:p-14 rounded-[3rem] shadow-2xl relative border border-stone-200/60 transition-shadow duration-300"
           >
             {/* Horizontal Notebook Spiral Rings */}
             <div className="absolute top-0 left-8 right-8 -translate-y-4 flex justify-between px-2 z-20 pointer-events-none select-none">
@@ -706,23 +706,25 @@ const SessionDetails = () => (
                 </text>
               </svg>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-2 bg-emerald-50 px-5 py-2 rounded-full border border-emerald-100 mb-6 cursor-default"
-            >
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-emerald-800 text-xs font-bold uppercase tracking-widest">Sesión Individual y en Pareja</span>
-            </motion.div>
-            <h3 className="text-3xl font-serif text-stone-800 mb-8">Invertir en ti es la mejor decisión</h3>
+            <div className="flex justify-center w-full mb-6">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+                className="inline-flex items-center gap-2 bg-emerald-50 px-5 py-2 rounded-full border border-emerald-100 cursor-default"
+              >
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span className="text-emerald-800 text-xs font-bold uppercase tracking-widest">Sesión Individual y en Pareja</span>
+              </motion.div>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-serif text-stone-800 mb-8 text-center">Invertir en ti es la mejor decisión</h3>
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 180, delay: 0.2 }}
-              className="mb-8 flex flex-wrap items-baseline gap-x-2 gap-y-1"
+              className="mb-8 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1 text-center"
             >
               <span className="text-5xl sm:text-6xl font-black text-emerald-800 tracking-tight">$600</span>
               <span className="text-stone-500 text-lg sm:text-xl font-light">MXN / Sesión</span>
