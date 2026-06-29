@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script>
+      (function() {
+        if (typeof window !== 'undefined') {
+          try {
+            var originalFetch = window.fetch;
+            var currentFetch = originalFetch;
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: true,
+              get: function() {
+                return currentFetch;
+              },
+              set: function(val) {
+                currentFetch = val;
+              }
+            });
+          } catch (e) {
+            console.warn('Fetch setter safeguard could not be applied:', e);
+          }
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <!-- Google Identity Services (GIS) SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>
+
