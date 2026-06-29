@@ -588,7 +588,7 @@ const SessionDetails = () => (
               boxShadow: "0 40px 80px -20px rgba(6, 95, 70, 0.15)"
             }}
             style={{ transformStyle: "preserve-3d" }}
-            className="bg-[#FAFAF7] p-10 md:p-14 rounded-[3rem] shadow-2xl relative border border-stone-200/60 transition-shadow duration-300"
+            className="bg-[#FAFAF7] p-6 sm:p-10 md:p-14 rounded-[3rem] shadow-2xl relative border border-stone-200/60 transition-shadow duration-300"
           >
             {/* Horizontal Notebook Spiral Rings */}
             <div className="absolute top-0 left-8 right-8 -translate-y-4 flex justify-between px-2 z-20 pointer-events-none select-none">
@@ -722,10 +722,10 @@ const SessionDetails = () => (
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 180, delay: 0.2 }}
-              className="mb-10 flex items-baseline gap-2"
+              className="mb-8 flex flex-wrap items-baseline gap-x-2 gap-y-1"
             >
-              <span className="text-6xl font-black text-emerald-800 tracking-tight">$600</span>
-              <span className="text-stone-500 text-xl font-light">MXN / Sesión</span>
+              <span className="text-5xl sm:text-6xl font-black text-emerald-800 tracking-tight">$600</span>
+              <span className="text-stone-500 text-lg sm:text-xl font-light">MXN / Sesión</span>
             </motion.div>
             <ul className="space-y-5 mb-10">
               {[
@@ -743,15 +743,15 @@ const SessionDetails = () => (
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 + i * 0.08, type: "spring", stiffness: 120 }}
                   whileHover={{ x: 6 }}
-                  className="flex items-center gap-4 text-stone-700 font-medium cursor-default group"
+                  className="flex items-start gap-4 text-stone-700 font-medium cursor-default group text-sm sm:text-base"
                 >
                   <motion.div 
                     whileHover={{ scale: 1.2, rotate: 12 }}
-                    className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-all shadow-sm"
+                    className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-all shadow-sm shrink-0 mt-0.5"
                   >
                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                   </motion.div>
-                  <span className="group-hover:text-emerald-900 transition-colors duration-150">{text}</span>
+                  <span className="group-hover:text-emerald-900 transition-colors duration-150 leading-snug">{text}</span>
                 </motion.li>
               ))}
             </ul>
@@ -778,7 +778,7 @@ const SessionDetails = () => (
               href="https://wa.me/5215635706932"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center bg-emerald-800 hover:bg-emerald-900 text-white py-5 rounded-[2rem] font-sans font-black text-xl transition-all shadow-2xl active:scale-95"
+              className="w-full flex items-center justify-center bg-emerald-800 hover:bg-emerald-900 text-white py-4 sm:py-5 px-4 rounded-xl sm:rounded-[2rem] font-sans font-black text-base sm:text-lg md:text-xl transition-all shadow-2xl active:scale-95 text-center"
             >
               Agendar mi primera sesión
             </motion.a>
