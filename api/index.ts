@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
 // Cargar variables de entorno desde .env.local
 dotenv.config({ path: '.env.local' });
@@ -11,27 +10,43 @@ const app = express();
 app.use(express.json());
 
 const PORT = 3001;
-const BOOKINGS_FILE = path.join(process.cwd(), 'bookings.json');
 
-// ── Tipos ─────────────────────────────────────────────────────────────────────
-type Bookings = Record<string, string[]>; // { "2026-06-29": ["10:00", "15:00"] }
+// ── Supabase client ───────────────────────────────────────────────────────────
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
-// ── Helpers de bookings.json ──────────────────────────────────────────────────
-function readBookings(): Bookings {
-  try {
-    if (!fs.existsSync(BOOKINGS_FILE)) return {};
-    const content = fs.readFileSync(BOOKINGS_FILE, 'utf-8');
-    return JSON.parse(content) as Bookings;
-  } catch {
-    return {};
+// ── Helpers de base de datos ──────────────────────────────────────────────────
+async function getBookedTimes(date: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('time')
+    .eq('date', date);
+  if (error) {
+    console.error('Error leyendo bookings de Supabase:', error.message);
+    return [];
+  }
+  return (data || []).map((row: any) => row.time);
+}
+
+async function addBooking(date: string, time: string, patientName: string): Promise<void> {
+  const { error } = await supabase
+    .from('bookings')
+    .insert({ date, time, patient_name: patientName });
+  if (error) {
+    throw new Error(`Error guardando reserva en Supabase: ${error.message}`);
   }
 }
 
-function writeBookings(data: Bookings): void {
-  try {
-    fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Error al guardar en bookings.json (podría ser de solo lectura en Vercel):', err);
+async function removeBooking(date: string, time: string): Promise<void> {
+  const { error } = await supabase
+    .from('bookings')
+    .delete()
+    .eq('date', date)
+    .eq('time', time);
+  if (error) {
+    console.error('Error eliminando reserva de Supabase:', error.message);
   }
 }
 
@@ -199,14 +214,14 @@ app.get('/api/auth/callback', async (req, res) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // GET /api/booked-slots?date=YYYY-MM-DD → devuelve horarios ocupados de una fecha
-app.get('/api/booked-slots', (req, res) => {
+app.get('/api/booked-slots', async (req, res) => {
   const date = req.query.date as string;
   if (!date) {
     res.status(400).json({ error: 'Se requiere el parámetro date (YYYY-MM-DD).' });
     return;
   }
-  const bookings = readBookings();
-  res.json({ date, bookedTimes: bookings[date] || [] });
+  const bookedTimes = await getBookedTimes(date);
+  res.json({ date, bookedTimes });
 });
 
 // POST /api/create-booking → crea Zoom + Google Calendar y registra la cita
@@ -227,8 +242,8 @@ app.post('/api/create-booking', async (req, res) => {
     }
 
     // Verificar disponibilidad antes de proceder
-    const bookings = readBookings();
-    if ((bookings[date] || []).includes(time)) {
+    const bookedTimes = await getBookedTimes(date);
+    if (bookedTimes.includes(time)) {
       res.status(409).json({ error: 'Este horario ya está reservado. Por favor elige otro.' });
       return;
     }
@@ -320,10 +335,8 @@ app.post('/api/create-booking', async (req, res) => {
 
     const eventData = await gcalRes.json() as any;
 
-    // ── PASO 3: Guardar el slot en bookings.json ───────────────────────────
-    if (!bookings[date]) bookings[date] = [];
-    bookings[date].push(time);
-    writeBookings(bookings);
+    // ── PASO 3: Guardar el slot en Supabase ───────────────────────────────
+    await addBooking(date, time, patientName);
 
     console.log(`✅ Reserva registrada: ${patientName} — ${date} ${time}`);
 
@@ -340,19 +353,14 @@ app.post('/api/create-booking', async (req, res) => {
   }
 });
 
-// POST /api/cancel-booking → libera un slot en bookings.json
-app.post('/api/cancel-booking', (req, res) => {
+// POST /api/cancel-booking → libera un slot en Supabase
+app.post('/api/cancel-booking', async (req, res) => {
   const { date, time } = req.body as { date: string; time: string };
   if (!date || !time) {
     res.status(400).json({ error: 'Se requieren date y time.' });
     return;
   }
-  const bookings = readBookings();
-  if (bookings[date]) {
-    bookings[date] = bookings[date].filter(t => t !== time);
-    if (bookings[date].length === 0) delete bookings[date];
-    writeBookings(bookings);
-  }
+  await removeBooking(date, time);
   res.json({ success: true, message: `Slot ${date} ${time} liberado correctamente.` });
 });
 
@@ -363,6 +371,7 @@ app.get('/api/health', (_req, res) => {
     status:           'ok',
     googleCalendar:   hasRefreshToken ? 'vinculado' : 'no vinculado — visita /api/auth',
     zoomConfigured:   !!process.env.ZOOM_ACCOUNT_ID,
+    supabase:         !!process.env.SUPABASE_URL ? 'conectado' : 'no configurado',
   });
 });
 
