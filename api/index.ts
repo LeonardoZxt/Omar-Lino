@@ -251,7 +251,7 @@ app.post('/api/create-booking', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        topic:      `Sesión de Terapia - Omar García`,
+        topic:      `Sesión de Terapia - ${patientName}`,
         type:       2,
         start_time: startDateTime,
         duration:   50,
