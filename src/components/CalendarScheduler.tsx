@@ -240,7 +240,13 @@ export const CalendarScheduler = () => {
                         type="date"
                         name="date"
                         required
-                        min={new Date().toISOString().split('T')[0]}
+                        min={(() => {
+                          const today = new Date();
+                          const year = today.getFullYear();
+                          const month = String(today.getMonth() + 1).padStart(2, '0');
+                          const day = String(today.getDate()).padStart(2, '0');
+                          return `${year}-${month}-${day}`;
+                        })()}
                         value={formData.date}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3.5 rounded-2xl border border-stone-200 bg-white text-stone-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 text-sm transition-all"
